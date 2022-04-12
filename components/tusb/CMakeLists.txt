@@ -58,4 +58,4 @@ idf_component_register(SRCS ${srcs}
         PRIV_REQUIRES "vfs" "usb"
         )
 
-
+target_compile_options(${COMPONENT_LIB} PRIVATE ${compile_options})
