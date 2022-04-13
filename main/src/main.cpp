@@ -25,6 +25,7 @@ extern "C" void app_main(void)
     // main loop
     while (true) {
         usb::hid::update();
+        usb::serial::update();
 
         vTaskDelay(10 / portTICK_RATE_MS);
     }

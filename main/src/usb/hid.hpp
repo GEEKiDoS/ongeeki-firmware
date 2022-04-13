@@ -22,7 +22,6 @@ namespace usb {
         };
 
         struct input_t {
-            uint8_t report_id;
             cmd_t cmd;
             uint8_t payload[62];
         } __attribute((packed));

@@ -3,6 +3,5 @@
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/components/tusb/tinyusb" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/components/usb/tinyusb" vcs="Git" />
   </component>
 </project>

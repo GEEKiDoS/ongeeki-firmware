@@ -1,6 +1,9 @@
 #pragma once
 
 #include <cstdio>
+#include <functional>
+#include <new>
+
 #include <sdkconfig.h>
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
@@ -10,3 +13,7 @@
 
 #include "usb/usb.hpp"
 #include "usb/hid.hpp"
+#include "usb/serial.hpp"
+
+#include "boards/aime_reader.hpp"
+#include "boards/led_board.hpp"
