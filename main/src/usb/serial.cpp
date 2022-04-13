@@ -1,22 +1,21 @@
 #include "stdinclude.hpp"
 #include "tusb.h"
-#include "serial.hpp"
-
 
 namespace usb {
     namespace serial {
-        stream readers[CFG_TUD_CDC] = {
-                stream(0),
-                stream(1),
+        stream streams[CFG_TUD_CDC] = {
+            stream(0),
+            stream(1),
         };
 
         void init() {
-
+            led_board::init(&streams[0]);
+            aime_reader::init(&streams[1]);
         }
 
         void update() {
-            led_board::update(readers[0]);
-            aime_reader::update(readers[1]);
+            led_board::update();
+            aime_reader::update();
         }
 
         stream::stream(int itf) {
@@ -38,21 +37,23 @@ namespace usb {
             tud_cdc_n_write_char(m_itf, (char)0xE0);
         }
 
-        uint8_t stream::read() const {
+        bool stream::read(uint8_t &out) const {
             auto byte = (uint8_t) tud_cdc_n_read_char(m_itf);
 
             if(byte == 0xD0) {
-                return (uint8_t)(tud_cdc_n_read_char(m_itf) + 1);
+                out = (uint8_t)(tud_cdc_n_read_char(m_itf) + 1);
+                return true;
             }
 
-            return byte;
+            out = byte;
+            return false;
         }
 
         bool stream::available() const {
             auto avail = tud_cdc_n_available(m_itf);
             if(avail == 1) {
                 uint8_t peek;
-                if(!tud_cdc_n_peek(m_itf, &peek)) assert(false);
+                assert(tud_cdc_n_peek(m_itf, &peek));
 
                 if(peek == 0xD0)
                     return false;

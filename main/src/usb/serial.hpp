@@ -6,7 +6,7 @@ namespace usb {
         public:
             explicit stream(int itf);
 
-            uint8_t read() const;
+            bool read(uint8_t &out) const;
             void write(uint8_t byte) const;
             void write_head() const;
             bool available() const;

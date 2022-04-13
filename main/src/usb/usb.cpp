@@ -4,6 +4,13 @@
 #include <tusb.h>
 #include "desc.hpp"
 
+/**
+ * Note:
+ * VID_0CA3&PID_0021&MI_00 is LED Board (COM3)
+ * VID_0CA3&PID_0021&MI_02 is AIME Reader (COM1)
+ * VID_0CA3&PID_0021&MI_04 is IO4 Board
+ */
+
 namespace usb {
     static usb_phy_handle_t phy_hdl;
     static TaskHandle_t s_tusb_tskh;
@@ -28,6 +35,9 @@ namespace usb {
 
         tusb_init();
         xTaskCreate(task, "tinyusb_task", 4096, nullptr, 5, &s_tusb_tskh);
+
+        usb::hid::init();
+        usb::serial::init();
     }
 }
 

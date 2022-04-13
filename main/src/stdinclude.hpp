@@ -3,6 +3,8 @@
 #include <cstdio>
 #include <functional>
 #include <new>
+#include <iostream>
+#include <cstring>
 
 #include <sdkconfig.h>
 #include <freertos/FreeRTOS.h>

@@ -5,7 +5,8 @@ namespace usb {
         struct output_t {
             int16_t analog[8];
             int16_t rotary[4];
-            int16_t coin[2];
+            // 10bit be number
+            uint16_t coin[2];
             uint16_t switches[2];
             uint8_t system_status;
             uint8_t usb_status;
@@ -30,6 +31,7 @@ namespace usb {
     namespace hid {
         void init();
         void update();
+        void set_coin(uint8_t coin_count, size_t coin_unit = 0);
         void process_data(const io4::input_t *data);
     }
 }

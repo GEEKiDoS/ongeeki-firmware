@@ -1,21 +1,24 @@
 #include "stdinclude.hpp"
 
-namespace aime_reader {
-    void init() {
 
+namespace aime_reader {
+    const usb::serial::stream *stream;
+
+    void init(const usb::serial::stream *input) {
+        stream = input;
     }
 
-    void update(const usb::serial::stream &stream) {
-        int c = 0;
-
-        while(stream.available()) {
-            stream.write(stream.read());
-            c++;
+    void on_packet(cAiMeNFCRW::sNfcCommand &req) {
+        switch(req.codeCommand) {
+            default:
+                break;
         }
+    }
 
-        if(c > 0)
-            printf("aime reader recv %d bytes\n", c);
+    cAiMeNFCRW::sNfcCommand req;
+    uint8_t len, checksum;
 
-        stream.flush();
+    void update() {
+
     }
 }
