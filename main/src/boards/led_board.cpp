@@ -11,8 +11,8 @@ namespace led_board {
 
     void init(const usb::serial::stream *input) {
         stream = input;
-        out = io_alloc(PACKAGE_TYPE_RESPONSE, 128);
-        in = io_alloc(PACKAGE_TYPE_REQUEST, 128);
+        out = io_alloc(PACKET_TYPE_RESPONSE, 128);
+        in = io_alloc(PACKET_TYPE_REQUEST, 128);
     }
 
     void parse_led_data(const uint8_t* data, int count) {
@@ -37,50 +37,50 @@ namespace led_board {
             case CMD_SET_TIMEOUT:
             {
                 auto timeout = packet->request.data[0] << 8 | packet->request.data[1];
-                printf("BOARD TIMEOUT: %d\n", timeout);
+                printf("LED Board: Set Timeout: %d\n", timeout);
                 out->length = io_build_timeout(out->response.data, 1024, timeout);
                 break;
             }
             case CMD_SET_DISABLE:
             {
-                printf("BOARD ENABLE STATUS: %d\n", packet->request.data[0]);
+                printf("LED Board: Disabled: %d\n", packet->request.data[0]);
                 out->length = io_build_set_disable(out->response.data, 1024, packet->request.data[0]);
                 break;
             }
             case CMD_SET_LED_DIRECT:
             {
-                printf("BOARD RECV LED DATA\n");
+                printf("LED Board: Recv LED Data\n");
                 parse_led_data(packet->response.data, packet->length - 3);
                 response = false;
                 break;
             }
             case CMD_BOARD_INFO:
             {
-                printf("REPORTING BOARD INFO\n");
+                printf("LED Board: Report Board Information\n");
                 out->length = io_build_board_info(out->response.data, 1024, "15093-06", "6710A", 0xA0);
                 break;
             }
             case CMD_BOARD_STATUS:
             {
-                printf("REPORTING BOARD STATUS\n");
+                printf("LED Board: Report Board Status\n");
                 out->length = io_build_board_status(out->response.data, 1024, 0, 0, 0);
                 break;
             }
             case CMD_FIRM_SUM:
             {
-                printf("REPORTING BOARD FIRMWARE CHECKSUM\n");
+                printf("LED Board: Report Board Firmware Checksum\n");
                 out->length = io_build_firmsum(out->response.data, 1024, 0xAA53);
                 break;
             }
             case CMD_PROTOCOL_VERSION:
             {
-                printf("REPORTING BOARD PROTOCOL VERSION\n");
+                printf("LED Board: Report Protocol Version\n");
                 out->length = io_build_protocol_version(out->response.data, 1024, 1, 0);
                 break;
             }
             default:
             {
-                printf("GOT UNKNOWN PACKAGE\n");
+                printf("LED Board: Got Unknown Message\n");
                 out->length = 0;
                 out->response.status = ACK_INVALID;
                 break;
@@ -89,7 +89,7 @@ namespace led_board {
 
         if (response) {
             io_apply_checksum(out);
-            auto size = io_get_package_size(out, PACKAGE_TYPE_RESPONSE);
+            auto size = io_get_packet_size(out, PACKET_TYPE_RESPONSE);
 
             stream->write_head();
             for(auto i = 1; i < size; i++) {

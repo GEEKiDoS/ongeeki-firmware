@@ -1,9 +1,7 @@
 #include "stdinclude.hpp"
 
-extern "C" void app_main(void)
+extern "C" [[noreturn]] void app_main(void)
 {
-    printf("Hello world!\n");
-
     /* Print chip information */
     esp_chip_info_t chip_info;
     esp_chip_info(&chip_info);

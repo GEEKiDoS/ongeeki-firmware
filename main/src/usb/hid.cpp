@@ -26,20 +26,19 @@ namespace usb {
         void process_data(const io4::input_t *data) {
             switch (data->cmd) {
                 case io4::SET_COMM_TIMEOUT:
-                    printf("IO4: SET COMMUNICATE TIMEOUT\n");
+                    printf("IO4: Set Communicate Timeout\n");
                     output_data.system_status = 0x30;
                     break;
                 case io4::SET_SAMPLING_COUNT:
-                    printf("IO4: SET SAMPLING COUNT\n");
+                    printf("IO4: Set Sampling Count\n");
                     output_data.system_status = 0x30;
                     break;
                 case io4::CLEAR_BOARD_STATUS:
-                    printf("IO4: CLEAR BOARD STATUS\n");
+                    printf("IO4: Clear Board Status\n");
                     output_data.system_status = 0x00;
                     break;
                 case io4::SET_GENERAL_OUTPUT:
-                    printf("IO4: SET GENERAL OUTPUT\n");
-
+                    printf("IO4: Set General Output\n");
                     break;
                 default:
                     break;

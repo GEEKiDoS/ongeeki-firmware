@@ -1,7 +1,7 @@
-enum io_package_type_t : uint8_t
+enum io_packet_type_t : uint8_t
 {
-	PACKAGE_TYPE_REQUEST,
-	PACKAGE_TYPE_RESPONSE,
+	PACKET_TYPE_REQUEST,
+	PACKET_TYPE_RESPONSE,
 };
 
 enum io_ack_status_t : uint8_t
@@ -70,45 +70,45 @@ union io_packet_t
     };
 };
 
-inline io_packet_t* io_alloc(io_package_type_t type, size_t size)
+inline io_packet_t* io_alloc(io_packet_type_t type, size_t size)
 {
 	size += 5;
 
-	if (type == PACKAGE_TYPE_RESPONSE)
+	if (type == PACKET_TYPE_RESPONSE)
 		size += 2;
 
 	return (io_packet_t*)malloc(size);
 }
 
-inline void io_fill_data(io_packet_t* package, uint8_t dstNodeId, uint8_t srcNodeId)
+inline void io_fill_data(io_packet_t* packet, uint8_t dstNodeId, uint8_t srcNodeId)
 {
-	package->sync = 224;
-	package->dstNodeId = dstNodeId;
-	package->srcNodeId = srcNodeId;
+	packet->sync = 224;
+	packet->dstNodeId = dstNodeId;
+	packet->srcNodeId = srcNodeId;
 }
 
-inline size_t io_get_package_size(io_packet_t* package, io_package_type_t type)
+inline size_t io_get_packet_size(io_packet_t* packet, io_packet_type_t type)
 {
-	return package->length + 5;
+	return packet->length + 5;
 }
 
-inline void io_apply_checksum(io_packet_t* package)
+inline void io_apply_checksum(io_packet_t* packet)
 {
-	package->length += 3;
-	auto totalLen = io_get_package_size(package, PACKAGE_TYPE_RESPONSE);
+	packet->length += 3;
+	auto totalLen = io_get_packet_size(packet, PACKET_TYPE_RESPONSE);
 
 	uint8_t checksum = 0;
-	checksum += package->dstNodeId;
-	checksum += package->srcNodeId;
-	checksum += package->length;
-	checksum += package->response.status;
-	checksum += package->response.command;
-	checksum += package->response.report;
+	checksum += packet->dstNodeId;
+	checksum += packet->srcNodeId;
+	checksum += packet->length;
+	checksum += packet->response.status;
+	checksum += packet->response.command;
+	checksum += packet->response.report;
 
-	for (auto i = 0; i < package->length - 3; i++)
-		checksum += package->response.data[i];
+	for (auto i = 0; i < packet->length - 3; i++)
+		checksum += packet->response.data[i];
 
-	package->request.data[totalLen - 6] = checksum;
+	packet->request.data[totalLen - 6] = checksum;
 }
 
 inline size_t io_build_board_info(uint8_t* buffer, size_t bufferSize, const char* boardNo, const char* chipNo, uint8_t revision)

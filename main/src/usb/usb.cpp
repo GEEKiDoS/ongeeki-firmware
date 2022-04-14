@@ -98,17 +98,6 @@ extern "C" {
     }
 
     void tud_hid_set_report_cb(uint8_t itf, uint8_t report_id, hid_report_type_t report_type, uint8_t const* buffer, uint16_t buf_size) {
-        printf("recv %d bytes at report_id %d\n", buf_size, report_id);
-        for(auto i = 0; i < buf_size && i < 32; i++) {
-            if(i > 0 && i % 0x10 == 0) {
-                printf("\n");
-            }
-
-            printf("%02hhX ", buffer[i]);
-        }
-
-        printf("\n\n");
-
         auto data = reinterpret_cast<const usb::io4::input_t *>(buffer);
         if(report_id == 0x10) {
             usb::hid::process_data(data);

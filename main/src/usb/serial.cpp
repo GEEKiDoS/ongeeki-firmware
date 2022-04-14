@@ -1,5 +1,7 @@
 #include "stdinclude.hpp"
 #include "tusb.h"
+#include "serial.hpp"
+
 
 namespace usb {
     namespace serial {
@@ -47,6 +49,10 @@ namespace usb {
 
             out = byte;
             return false;
+        }
+
+        uint8_t stream::read() const {
+            return (uint8_t) tud_cdc_n_read_char(m_itf);
         }
 
         bool stream::available() const {
