@@ -36,7 +36,7 @@ extern "C" {
 #define CFG_TUD_MIDI                0
 #define CFG_TUD_VENDOR              0
 
-#define TUP_DCD_ENDPOINT_MAX        8
+#define CFG_TUSB_MCU                OPT_MCU_ESP32S2
 
 #ifdef __cplusplus
 }
