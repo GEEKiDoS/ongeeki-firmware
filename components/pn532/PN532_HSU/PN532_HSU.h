@@ -24,6 +24,9 @@ private:
     int8_t readAckFrame();
     
     int8_t receive(uint8_t *buf, int len, uint16_t timeout=PN532_HSU_READ_TIMEOUT);
+
+    gpio_num_t tx;
+    gpio_num_t rx;
 };
 
 #endif

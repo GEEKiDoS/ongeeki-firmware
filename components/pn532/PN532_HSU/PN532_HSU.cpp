@@ -22,25 +22,30 @@ uint8_t uart_read_byte(uart_port_t uart_num) {
 
 PN532_HSU::PN532_HSU(gpio_num_t tx, gpio_num_t rx)
 {
-    uart_config_t uart_config = {
-            .baud_rate = 115200,
-            .data_bits = UART_DATA_8_BITS,
-            .parity = UART_PARITY_DISABLE,
-            .stop_bits = UART_STOP_BITS_1,
-            .flow_ctrl = UART_HW_FLOWCTRL_DISABLE,
-            .source_clk = UART_SCLK_APB,
-    };
-
-    uart_param_config(UART_NUM_1, &uart_config);
-    uart_set_pin(UART_NUM_1, tx, rx, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE);
-    uart_driver_install(UART_NUM_1, 128, 128, 0, NULL, 0);
+    this->tx = tx;
+    this->rx = rx;
 
     command = 0;
 }
 
 void PN532_HSU::begin()
 {
+    if(uart_is_driver_installed(UART_NUM_1)) {
+        printf("PN532_HSU: UART Driver has been installed, skipping..\n");
+        return;
+    }
 
+    uart_config_t uart_config = {
+        .baud_rate = 115200,
+        .data_bits = UART_DATA_8_BITS,
+        .parity = UART_PARITY_DISABLE,
+        .stop_bits = UART_STOP_BITS_1,
+        .flow_ctrl = UART_HW_FLOWCTRL_DISABLE,
+    };
+
+    uart_param_config(UART_NUM_1, &uart_config);
+    uart_set_pin(UART_NUM_1, tx, rx, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE);
+    uart_driver_install(UART_NUM_1, 512, 512, 10, NULL, 0);
 }
 
 void PN532_HSU::wakeup()
@@ -64,6 +69,10 @@ void PN532_HSU::wakeup()
 
 int8_t PN532_HSU::writeCommand(const uint8_t *header, uint8_t hlen, const uint8_t *body, uint8_t blen)
 {
+    if(!header) {
+        printf("header is null? hlen: %d\n", hlen);
+        return -1;
+    }
 
     /** dump serial buffer */
     if(uart_available(UART_NUM_1)){
@@ -96,11 +105,13 @@ int8_t PN532_HSU::writeCommand(const uint8_t *header, uint8_t hlen, const uint8_
         DMSG_HEX(header[i]);
     }
 
-    uart_write_bytes(UART_NUM_1, body, blen);
-    for (uint8_t i = 0; i < blen; i++) {
-        sum += body[i];
+    if(blen > 0) {
+        uart_write_bytes(UART_NUM_1, body, blen);
+        for (uint8_t i = 0; i < blen; i++) {
+            sum += body[i];
 
-        DMSG_HEX(body[i]);
+            DMSG_HEX(body[i]);
+        }
     }
     
     uint8_t checksum = ~sum + 1;            // checksum of TFI + DATA

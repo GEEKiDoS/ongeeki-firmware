@@ -115,16 +115,14 @@ static void sg_nfc_cmd_reset() { //重置读卡器
 
 static void sg_nfc_cmd_get_fw_version() {
     sg_res_init(23);
-    //  memcpy(res.version, "TN32MSEC003S F/W Ver1.2", 23);
-    memcpy(res.version, "*SCRT_Reader F/W Ver1.2", 23);
+    memcpy(res.version, "TN32MSEC003S F/W Ver1.2", 23);
     //  sg_res_init(1);
     //  memset(res.version, 0x94, 1);
 }
 
 static void sg_nfc_cmd_get_hw_version() {
     sg_res_init(23);
-    //    memcpy(res.version, "TN32MSEC003S H/W Ver3.0", 23);
-    memcpy(res.version, "*SCRT_Reader H/W Ver3.0", 23);
+    memcpy(res.version, "TN32MSEC003S H/W Ver3.0", 23);
     //  sg_res_init(9);
     //  memcpy(res.version, "837-15396", 9);
 }

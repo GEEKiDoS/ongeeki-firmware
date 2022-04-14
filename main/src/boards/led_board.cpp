@@ -30,7 +30,7 @@ namespace led_board {
         switch(packet->request.command) {
             case CMD_RESET:
             {
-                printf("BOARD RESET\n");
+                printf("LED Board: Reset\n");
                 out->length = 0;
                 break;
             }
@@ -49,7 +49,7 @@ namespace led_board {
             }
             case CMD_SET_LED_DIRECT:
             {
-                printf("LED Board: Recv LED Data\n");
+                // printf("LED Board: Recv LED Data\n");
                 parse_led_data(packet->response.data, packet->length - 3);
                 response = false;
                 break;
@@ -106,15 +106,16 @@ namespace led_board {
             bool is_escaped = stream->read(byte);
 
             if(byte == 0xE0 && !is_escaped) {
-                printf("LED Board: Recv Sync\n");
+                // printf("LED Board: Recv Sync\n");
                 in_size = 0;
                 checksum = 0;
             }
 
             in->buffer[in_size++] = byte;
 
+            // printf("LED Board: in_size %d, in->length %d, checksum %d, byte %d\n", in_size, in->length, checksum, byte);
             if(in_size > 5 && in_size - 5 == in->length && checksum == byte) {
-                printf("LED Board: Recv %d bytes, checksum %d\n", in_size, checksum);
+                // printf("LED Board: Recv %d bytes, checksum %d\n", in_size, checksum);
                 on_packet(in);
             }
 
