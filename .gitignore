@@ -1,4 +1,7 @@
 build
 cmake-build-*
 git
+.cache
+
+.DS_Store
 
