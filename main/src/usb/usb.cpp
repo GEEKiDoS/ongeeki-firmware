@@ -16,12 +16,6 @@ namespace usb {
     static TaskHandle_t s_tusb_tskh;
     static uint16_t desc_str_buffer[128];
 
-    [[noreturn]] static void task(void *arg) {
-        while (true) {
-            tud_task();
-        }
-    }
-
     void init() {
         usb_phy_config_t phy_conf = {
                 .controller = USB_PHY_CTRL_OTG,
@@ -34,8 +28,6 @@ namespace usb {
         usb_new_phy(&phy_conf, &phy_hdl);
 
         tusb_init();
-        xTaskCreate(task, "tinyusb_task", 4096, nullptr, 5, &s_tusb_tskh);
-
         usb::hid::init();
         usb::serial::init();
     }

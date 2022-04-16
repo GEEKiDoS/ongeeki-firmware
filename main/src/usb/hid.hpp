@@ -2,16 +2,30 @@
 
 namespace usb {
     namespace io4 {
+        enum class coin_condition_t : uint8_t
+        {
+            normal = 0x0,
+            jam = 0x1,
+            disconnect = 0x2,
+            busy = 0x3,
+        };
+
+        struct coin_data_t {
+            coin_condition_t condition;
+            uint8_t count;
+        } __attribute((packed));
+
+        static_assert(sizeof(coin_data_t) == 2, "wrong coin data_t");
+
         struct output_t {
             int16_t analog[8];
             int16_t rotary[4];
-            // 10bit be number
-            uint16_t coin[2];
+            coin_data_t coin[2];
             uint16_t switches[2];
             uint8_t system_status;
             uint8_t usb_status;
             uint8_t _unused[29];
-        } __attribute((packed)) ;
+        } __attribute((packed));
 
         enum cmd_t : uint8_t {
             SET_COMM_TIMEOUT = 0x01,
@@ -31,7 +45,6 @@ namespace usb {
     namespace hid {
         void init();
         void update();
-        void set_coin(uint8_t coin_count, size_t coin_unit = 0);
         void process_data(const io4::input_t *data);
     }
 }

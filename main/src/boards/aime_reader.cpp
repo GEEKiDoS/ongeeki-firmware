@@ -4,11 +4,38 @@
 namespace aime_reader {
     const usb::serial::stream *stream;
 
-    void init(const usb::serial::stream *input) {
-        stream = input;
+    TaskHandle_t h_read_card;
+    [[noreturn]] static void read_test_task(void *arg) {
+        uint64_t idm;
+        uint64_t pmm;
+        uint16_t sys_code;
+
+        while(true) {
+            if (nfc.felica_Polling(0xFFFF, 0x01, (uint8_t *)&idm, (uint8_t *)&pmm, &sys_code, 200)) {
+                printf("Felica card!\nIDm: %llx\nPMm: %llx\nSystem Code: %x\n", idm, pmm, sys_code);
+            }
+
+            vTaskDelay(2000 / portTICK_RATE_MS);
+        }
     }
 
-    void reset() {
+    void init(const usb::serial::stream *input) {
+        stream = input;
+
+        nfc.begin();
+        auto fw_version = nfc.getFirmwareVersion();
+        if(fw_version > 0) {
+            printf("Found NFC Module, FW Version: %x\n", fw_version);
+            nfc.setPassiveActivationRetries(0x10);
+            nfc.SAMConfig();
+        } else {
+            printf("NFC Module not found, does it connected properly?\n");
+        }
+
+        // xTaskCreate(read_test_task, "test_nfc", 4096, nullptr, 5, &h_read_card);
+
+        memset(&req, 0, sizeof(req.bytes));
+        memset(&res, 0, sizeof(res.bytes));
 
     }
 
@@ -79,6 +106,7 @@ namespace aime_reader {
                 sg_led_cmd_set_color();
                 break;
             default:
+                printf("Unknown Aime Command: 0x%x\n", req.cmd);
                 sg_res_init();
                 break;
         }

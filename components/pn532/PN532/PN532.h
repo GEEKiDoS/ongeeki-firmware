@@ -1,6 +1,6 @@
 /**************************************************************************/
 /*!
-    @file     PN532.h
+    @file     PN532/PN532/PN532.h
     @author   Adafruit Industries & Seeed Studio
     @license  BSD
 */
@@ -140,6 +140,7 @@ public:
     uint8_t readGPIO(void);
     bool setPassiveActivationRetries(uint8_t maxRetries);
     bool setRFField(uint8_t autoRFCA, uint8_t rFOnOff);
+    bool powerDownMode();
 
     /**
     * @brief    Init PN532 as a target
@@ -158,8 +159,10 @@ public:
 
     // ISO14443A functions
     bool inListPassiveTarget();
-    bool readPassiveTargetID(uint8_t cardbaudrate, uint8_t *uid, uint8_t *uidLength, uint16_t timeout = 1000);
+    bool startPassiveTargetIDDetection(uint8_t cardbaudrate);
+    bool readPassiveTargetID(uint8_t cardbaudrate, uint8_t *uid, uint8_t *uidLength, uint16_t timeout = 1000, bool inlist = false);
     bool inDataExchange(uint8_t *send, uint8_t sendLength, uint8_t *response, uint8_t *responseLength);
+    bool inCommunicateThru(uint8_t *send, uint8_t sendLength, uint8_t *response, uint8_t *responseLength);
 
     // Mifare Classic functions
     bool mifareclassic_IsFirstBlock (uint32_t uiBlock);

@@ -1,3 +1,4 @@
+#include <device/usbd.h>
 #include "stdinclude.hpp"
 
 extern "C" [[noreturn]] void app_main(void)
@@ -22,9 +23,8 @@ extern "C" [[noreturn]] void app_main(void)
 
     // main loop
     while (true) {
+        tud_task();
         usb::hid::update();
         usb::serial::update();
-
-        vTaskDelay(10 / portTICK_RATE_MS);
     }
 }

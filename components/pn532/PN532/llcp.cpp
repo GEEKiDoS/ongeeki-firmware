@@ -3,14 +3,14 @@
 #include "PN532_debug.h"
 
 // LLCP PDU Type Values
-#define PDU_SYMM    0x00
-#define PDU_PAX     0x01
+#define PDU_SYMM 0x00
+#define PDU_PAX 0x01
 #define PDU_CONNECT 0x04
-#define PDU_DISC    0x05
-#define PDU_CC      0x06
-#define PDU_DM      0x07
-#define PDU_I       0x0c
-#define PDU_RR      0x0d
+#define PDU_DISC 0x05
+#define PDU_CC 0x06
+#define PDU_DM 0x07
+#define PDU_I 0x0c
+#define PDU_RR 0x0d
 
 uint8_t LLCP::SYMM_PDU[2] = {0, 0};
 
@@ -21,7 +21,7 @@ inline uint8_t getPType(const uint8_t *buf)
 
 inline uint8_t getSSAP(const uint8_t *buf)
 {
-    return  buf[1] & 0x3f;
+    return buf[1] & 0x3f;
 }
 
 inline uint8_t getDSAP(const uint8_t *buf)
@@ -44,19 +44,27 @@ int8_t LLCP::waitForConnection(uint16_t timeout)
 
     // Get CONNECT PDU
     DMSG("wait for a CONNECT PDU\n");
-    do {
-        if (2 > link.read(headerBuf, headerBufLen)) {
+    do
+    {
+        if (2 > link.read(headerBuf, headerBufLen))
+        {
             return -1;
         }
 
         type = getPType(headerBuf);
-        if (PDU_CONNECT == type) {
+        if (PDU_CONNECT == type)
+        {
             break;
-        } else if (PDU_SYMM == type) {
-            if (!link.write(SYMM_PDU, sizeof(SYMM_PDU))) {
+        }
+        else if (PDU_SYMM == type)
+        {
+            if (!link.write(SYMM_PDU, sizeof(SYMM_PDU)))
+            {
                 return -2;
             }
-        } else {
+        }
+        else
+        {
             return -3;
         }
 
@@ -68,7 +76,8 @@ int8_t LLCP::waitForConnection(uint16_t timeout)
     dsap = getSSAP(headerBuf);
     headerBuf[0] = (dsap << 2) + ((PDU_CC >> 2) & 0x3);
     headerBuf[1] = ((PDU_CC & 0x3) << 6) + ssap;
-    if (!link.write(headerBuf, 2)) {
+    if (!link.write(headerBuf, 2))
+    {
         return -2;
     }
 
@@ -81,19 +90,27 @@ int8_t LLCP::waitForDisconnection(uint16_t timeout)
 
     // Get DISC PDU
     DMSG("wait for a DISC PDU\n");
-    do {
-        if (2 > link.read(headerBuf, headerBufLen)) {
+    do
+    {
+        if (2 > link.read(headerBuf, headerBufLen))
+        {
             return -1;
         }
 
         type = getPType(headerBuf);
-        if (PDU_DISC == type) {
+        if (PDU_DISC == type)
+        {
             break;
-        } else if (PDU_SYMM == type) {
-            if (!link.write(SYMM_PDU, sizeof(SYMM_PDU))) {
+        }
+        else if (PDU_SYMM == type)
+        {
+            if (!link.write(SYMM_PDU, sizeof(SYMM_PDU)))
+            {
                 return -2;
             }
-        } else {
+        }
+        else
+        {
             return -3;
         }
 
@@ -105,7 +122,8 @@ int8_t LLCP::waitForDisconnection(uint16_t timeout)
     // dsap = getSSAP(headerBuf);
     headerBuf[0] = (dsap << 2) + (PDU_DM >> 2);
     headerBuf[1] = ((PDU_DM & 0x3) << 6) + ssap;
-    if (!link.write(headerBuf, 2)) {
+    if (!link.write(headerBuf, 2))
+    {
         return -2;
     }
 
@@ -123,11 +141,13 @@ int8_t LLCP::connect(uint16_t timeout)
     nr = 0;
 
     // try to get a SYMM PDU
-    if (2 > link.read(headerBuf, headerBufLen)) {
+    if (2 > link.read(headerBuf, headerBufLen))
+    {
         return -1;
     }
     type = getPType(headerBuf);
-    if (PDU_SYMM != type) {
+    if (PDU_SYMM != type)
+    {
         return -1;
     }
 
@@ -137,25 +157,34 @@ int8_t LLCP::connect(uint16_t timeout)
     uint8_t body[] = "  urn:nfc:sn:snep";
     body[0] = 0x06;
     body[1] = sizeof(body) - 2 - 1;
-    if (!link.write(headerBuf, 2, body, sizeof(body) - 1)) {
+    if (!link.write(headerBuf, 2, body, sizeof(body) - 1))
+    {
         return -2;
     }
 
     // wait for a CC PDU
     DMSG("wait for a CC PDU\n");
-    do {
-        if (2 > link.read(headerBuf, headerBufLen)) {
+    do
+    {
+        if (2 > link.read(headerBuf, headerBufLen))
+        {
             return -1;
         }
 
         type = getPType(headerBuf);
-        if (PDU_CC == type) {
+        if (PDU_CC == type)
+        {
             break;
-        } else if (PDU_SYMM == type) {
-            if (!link.write(SYMM_PDU, sizeof(SYMM_PDU))) {
+        }
+        else if (PDU_SYMM == type)
+        {
+            if (!link.write(SYMM_PDU, sizeof(SYMM_PDU)))
+            {
                 return -2;
             }
-        } else {
+        }
+        else
+        {
             return -3;
         }
 
@@ -169,36 +198,47 @@ int8_t LLCP::disconnect(uint16_t timeout)
     uint8_t type;
 
     // try to get a SYMM PDU
-    if (2 > link.read(headerBuf, headerBufLen)) {
+    if (2 > link.read(headerBuf, headerBufLen))
+    {
         return -1;
     }
     type = getPType(headerBuf);
-    if (PDU_SYMM != type) {
+    if (PDU_SYMM != type)
+    {
         return -1;
     }
 
     // put a DISC PDU
     headerBuf[0] = (LLCP_DEFAULT_DSAP << 2) + (PDU_DISC >> 2);
     headerBuf[1] = ((PDU_DISC & 0x03) << 6) + LLCP_DEFAULT_SSAP;
-    if (!link.write(headerBuf, 2)) {
+    if (!link.write(headerBuf, 2))
+    {
         return -2;
     }
 
     // wait for a DM PDU
     DMSG("wait for a DM PDU\n");
-    do {
-        if (2 > link.read(headerBuf, headerBufLen)) {
+    do
+    {
+        if (2 > link.read(headerBuf, headerBufLen))
+        {
             return -1;
         }
 
         type = getPType(headerBuf);
-        if (PDU_CC == type) {
+        if (PDU_CC == type)
+        {
             break;
-        } else if (PDU_DM == type) {
-            if (!link.write(SYMM_PDU, sizeof(SYMM_PDU))) {
+        }
+        else if (PDU_DM == type)
+        {
+            if (!link.write(SYMM_PDU, sizeof(SYMM_PDU)))
+            {
                 return -2;
             }
-        } else {
+        }
+        else
+        {
             return -3;
         }
 
@@ -212,25 +252,30 @@ bool LLCP::write(const uint8_t *header, uint8_t hlen, const uint8_t *body, uint8
     uint8_t type;
     uint8_t buf[3];
 
-    if (mode) {
+    if (mode)
+    {
         // Get a SYMM PDU
-        if (2 != link.read(buf, sizeof(buf))) {
+        if (2 != link.read(buf, sizeof(buf)))
+        {
             return false;
         }
     }
 
-    if (headerBufLen < (hlen + 3)) {
+    if (headerBufLen < (hlen + 3))
+    {
         return false;
     }
 
-    for (int8_t i = hlen - 1; i >= 0; i--) {
+    for (int8_t i = hlen - 1; i >= 0; i--)
+    {
         headerBuf[i + 3] = header[i];
     }
 
     headerBuf[0] = (dsap << 2) + (PDU_I >> 2);
     headerBuf[1] = ((PDU_I & 0x3) << 6) + ssap;
     headerBuf[2] = (ns << 4) + nr;
-    if (!link.write(headerBuf, 3 + hlen, body, blen)) {
+    if (!link.write(headerBuf, 3 + hlen, body, blen))
+    {
         return false;
     }
 
@@ -238,25 +283,34 @@ bool LLCP::write(const uint8_t *header, uint8_t hlen, const uint8_t *body, uint8
 
     // Get a RR PDU
     int16_t status;
-    do {
+    do
+    {
         status = link.read(headerBuf, headerBufLen);
-        if (2 > status) {
+        if (2 > status)
+        {
             return false;
         }
 
         type = getPType(headerBuf);
-        if (PDU_RR == type) {
+        if (PDU_RR == type)
+        {
             break;
-        } else if (PDU_SYMM == type) {
-            if (!link.write(SYMM_PDU, sizeof(SYMM_PDU))) {
+        }
+        else if (PDU_SYMM == type)
+        {
+            if (!link.write(SYMM_PDU, sizeof(SYMM_PDU)))
+            {
                 return false;
             }
-        } else {
+        }
+        else
+        {
             return false;
         }
     } while (1);
 
-    if (!link.write(SYMM_PDU, sizeof(SYMM_PDU))) {
+    if (!link.write(SYMM_PDU, sizeof(SYMM_PDU)))
+    {
         return false;
     }
 
@@ -269,20 +323,28 @@ int16_t LLCP::read(uint8_t *buf, uint8_t length)
     uint16_t status;
 
     // Get INFO PDU
-    do {
+    do
+    {
         status = link.read(buf, length);
-        if (2 > status) {
+        if (2 > status)
+        {
             return -1;
         }
 
         type = getPType(buf);
-        if (PDU_I == type) {
+        if (PDU_I == type)
+        {
             break;
-        } else if (PDU_SYMM == type) {
-            if (!link.write(SYMM_PDU, sizeof(SYMM_PDU))) {
+        }
+        else if (PDU_SYMM == type)
+        {
+            if (!link.write(SYMM_PDU, sizeof(SYMM_PDU)))
+            {
                 return -2;
             }
-        } else {
+        }
+        else
+        {
             return -3;
         }
 
@@ -295,11 +357,13 @@ int16_t LLCP::read(uint8_t *buf, uint8_t length)
     headerBuf[0] = (dsap << 2) + (PDU_RR >> 2);
     headerBuf[1] = ((PDU_RR & 0x3) << 6) + ssap;
     headerBuf[2] = (buf[2] >> 4) + 1;
-    if (!link.write(headerBuf, 3)) {
+    if (!link.write(headerBuf, 3))
+    {
         return -2;
     }
 
-    for (uint8_t i = 0; i < len; i++) {
+    for (uint8_t i = 0; i < len; i++)
+    {
         buf[i] = buf[i + 3];
     }
 

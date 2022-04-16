@@ -2,7 +2,6 @@
 #include "tusb.h"
 #include "serial.hpp"
 
-
 namespace usb {
     namespace serial {
         stream streams[CFG_TUD_CDC] = {
