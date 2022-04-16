@@ -91,16 +91,18 @@ namespace usb {
         ITF_NUM_CDC_1,
         ITF_NUM_CDC_1_DATA,
         ITF_NUM_HID,
+        ITF_NUM_MSC,
         ITF_NUM_TOTAL
     };
 
-    const uint16_t descriptor_length = (TUD_CONFIG_DESC_LEN + CFG_TUD_CDC * TUD_CDC_DESC_LEN + CFG_TUD_HID * TUD_HID_DESC_LEN);
+    const uint16_t descriptor_length = (TUD_CONFIG_DESC_LEN + CFG_TUD_CDC * TUD_CDC_DESC_LEN + CFG_TUD_HID * TUD_HID_DESC_LEN + CFG_TUD_MSC * TUD_MSC_DESC_LEN);
 
     uint8_t const desc_configuration[] = {
             TUD_CONFIG_DESCRIPTOR(1, ITF_NUM_TOTAL, 0, descriptor_length, 0x00, 100),
             TUD_HID_DESCRIPTOR(ITF_NUM_HID, 6, HID_ITF_PROTOCOL_NONE, sizeof(desc_hid_report),0x81, CFG_TUD_HID_EP_BUFSIZE, 1),
-            TUD_CDC_DESCRIPTOR(ITF_NUM_CDC_0, 4, 0x84, 8, 0x02, 0x82, 64),
-            TUD_CDC_DESCRIPTOR(ITF_NUM_CDC_1, 5, 0x85, 8, 0x03, 0x83, 64),
+            TUD_CDC_DESCRIPTOR(ITF_NUM_CDC_0, 4, 0x85, 8, 0x02, 0x82, 64),
+            TUD_CDC_DESCRIPTOR(ITF_NUM_CDC_1, 5, 0x86, 8, 0x03, 0x83, 64),
+            TUD_MSC_DESCRIPTOR(ITF_NUM_MSC, 7, 0x04, 0x84, 64),
     };
 
     tusb_desc_device_qualifier_t const desc_device_qualifier = {
@@ -132,5 +134,7 @@ namespace usb {
             "LED BOARD",
             // 6: IO4 Board Name
             "I/O CONTROL BD;15257;01;90;1831;6679A;00;GOUT=14_ADIN=8,E_ROTIN=4_COININ=2_SWIN=2,E_UQ1=41,6;",
+            // 7: Driver Disk
+            "ONGEEKi Driver",
     };
 }

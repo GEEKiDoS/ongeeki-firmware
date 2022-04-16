@@ -1,4 +1,4 @@
-#pragma once
+
 
 #ifdef __cplusplus
 extern "C" {
@@ -30,8 +30,10 @@ extern "C" {
 
 #define CFG_TUD_HID_BUFSIZE         64
 
+#define CFG_TUD_MSC_EP_BUFSIZE      64
+
 #define CFG_TUD_CDC                 2
-#define CFG_TUD_MSC                 0
+#define CFG_TUD_MSC                 1
 #define CFG_TUD_HID                 1
 #define CFG_TUD_MIDI                0
 #define CFG_TUD_VENDOR              0
