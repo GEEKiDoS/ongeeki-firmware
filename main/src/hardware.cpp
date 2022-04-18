@@ -14,12 +14,6 @@ namespace hardware {
         GPIO_NUM_38, GPIO_NUM_39, GPIO_NUM_40, GPIO_NUM_41, GPIO_NUM_42,
     };
 
-    // 1 if is always-open switch
-    const uint8_t gpio_modes[] = {
-        1, 1, 1, 0, 1,
-        1, 1, 1, 0, 1,
-    };
-
     const switch_map_t switch_maps[] = {
         // Left A, B, C
         switch_map_t { .player = 0, .bit = 0  },
@@ -67,7 +61,7 @@ namespace hardware {
 
         for(int i = 0; i < 10; i++) {
             auto& map = switch_maps[i];
-            auto state = gpio_get_level(gpio_settings[i]) ^ gpio_modes[i];
+            auto state = !gpio_get_level(gpio_settings[i]);
 
             if(state) {
                 if(i == 0 || i == 7 || i == 4 || i == 9) {
@@ -80,19 +74,42 @@ namespace hardware {
             }
         }
 
+        static bool is_inserted_coin = false;
+
         // TEST Workaround: Press both LA, LM, RC and RM to trigger
         if(test_sum == 4) {
             data.switches[0] |= 1 << 9;
             data.switches[0] |= 1 << 6;
-        } else {
+        } else if(test_sum == 2) {
+            if(!is_inserted_coin) {
+                is_inserted_coin = true;
+
+                data.coin[0].count ++;
+            }
+        }  else {
             data.switches[0] &= ~(1 << 9);
             data.switches[0] &= ~(1 << 6);
+
+            is_inserted_coin = false;
         }
 
-        static float lever_smooth = 0;
-        lever_smooth = lever_smooth * 0.9f + (float)adc1_get_raw(LEVER_PIN) * 0.1f;
+        static uint16_t lever_history[32];
+        static size_t pos = 0;
 
-        data.analog[0] = (int16_t)((((lever_smooth - 0x0B0C) / 0x83B) * -1.0f - 0.5f) * INT16_MAX);
+        lever_history[pos++] = (adc1_get_raw(LEVER_PIN) - 0x13FF) * 0x10;
+
+        if(pos == 32) {
+            pos = 0;
+        }
+
+        uint32_t lever = 0;
+        for(auto i = 0; i < 32; i++) {
+            lever += lever_history[i];
+        }
+
+        lever /= 32;
+
+        data.analog[0] = lever;
     }
 
     const uint8_t mu3_led_mapping[18] = {1, 0, 3, 5, 4, 2, 8, 6, 7, 11, 9, 10, 14, 12, 13, 17, 15, 16};

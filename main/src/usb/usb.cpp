@@ -8,8 +8,8 @@
 
 /**
  * Note:
- * VID_0CA3&PID_0021&MI_00 is LED Board (COM3)
- * VID_0CA3&PID_0021&MI_02 is AIME Reader (COM1)
+ * VID_0CA3&PID_0021&MI_00 is AIME Reader (COM1)
+ * VID_0CA3&PID_0021&MI_02 is LED Board (COM3)
  * VID_0CA3&PID_0021&MI_04 is IO4 Board
  */
 

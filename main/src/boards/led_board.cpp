@@ -1,3 +1,4 @@
+#ifdef LED_BOARD_ENABLE
 #include "stdinclude.hpp"
 #include "comio.hpp"
 
@@ -125,3 +126,4 @@ namespace led_board {
         }
     }
 }
+#endif

@@ -146,7 +146,7 @@ namespace aime_reader {
             if(in_size > 2 && in_size - 1 == req.frame_len && checksum == byte) {
                 // printf("Aime Reader: Recv %d bytes, checksum %d\n", in_size, checksum);
                 on_packet();
-                return;
+                // return;
             }
 
             checksum += byte;

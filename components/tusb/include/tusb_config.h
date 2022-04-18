@@ -32,7 +32,12 @@ extern "C" {
 
 #define CFG_TUD_MSC_EP_BUFSIZE      64
 
+#ifdef LED_BOARD_ENABLE
 #define CFG_TUD_CDC                 2
+#else
+#define CFG_TUD_CDC                 1
+#endif
+    
 #define CFG_TUD_MSC                 1
 #define CFG_TUD_HID                 1
 #define CFG_TUD_MIDI                0

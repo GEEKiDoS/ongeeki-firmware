@@ -1,3 +1,3 @@
-idf_component_register(SRC_DIRS PN532 PN532_I2C
-        INCLUDE_DIRS PN532 PN532_I2C
+idf_component_register(SRC_DIRS PN532 PN532_I2C PN532_HSU
+        INCLUDE_DIRS PN532 PN532_I2C PN532_HSU
         )

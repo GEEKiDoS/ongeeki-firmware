@@ -6,17 +6,23 @@ namespace usb {
     namespace serial {
         stream streams[CFG_TUD_CDC] = {
             stream(0),
+#ifdef LED_BOARD_ENABLE
             stream(1),
+#endif
         };
 
         void init() {
-            led_board::init(&streams[0]);
-            aime_reader::init(&streams[1]);
+            aime_reader::init(&streams[0]);
+#ifdef LED_BOARD_ENABLE
+            led_board::init(&streams[1]);
+#endif
         }
 
         void update() {
-            led_board::update();
             aime_reader::update();
+#ifdef LED_BOARD_ENABLE
+            led_board::update();
+#endif
         }
 
         stream::stream(int itf) {
