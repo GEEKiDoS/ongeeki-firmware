@@ -19,3 +19,5 @@
 
 #include "boards/aime_reader.hpp"
 #include "boards/led_board.hpp"
+
+#include "hardware.hpp"

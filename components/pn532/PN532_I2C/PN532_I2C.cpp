@@ -19,8 +19,10 @@ PN532_I2C::PN532_I2C(i2c_port_t i2c_num, gpio_num_t scl, gpio_num_t sda)
 
 void PN532_I2C::begin()
 {
+    printf("PN532_I2C::begin()\n");
+
     if(inited) {
-        i2c_driver_delete(i2c_num);
+        return;
     }
 
     i2c_config_t conf = {
@@ -36,7 +38,7 @@ void PN532_I2C::begin()
     };
 
     i2c_param_config(i2c_num, &conf);
-    i2c_driver_install(i2c_num, conf.mode, 0, 0, 0);
+    i2c_driver_install(i2c_num, I2C_MODE_MASTER, 0, 0, 0);
     i2c_set_timeout(i2c_num, 400000);
 
     inited = true;

@@ -19,12 +19,14 @@ extern "C" [[noreturn]] void app_main(void)
 
     printf("Minimum free heap size: %d bytes\n", esp_get_minimum_free_heap_size());
 
+    hardware::init();
     usb::init();
 
     // main loop
     while (true) {
-        tud_task();
         usb::hid::update();
         usb::serial::update();
+
+        vTaskDelay(8 / portTICK_RATE_MS);
     }
 }

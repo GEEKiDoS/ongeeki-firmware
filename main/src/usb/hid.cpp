@@ -32,6 +32,7 @@ namespace usb {
 
         void update() {
             if (tud_hid_ready()) {
+                hardware::update(output_data);
                 tud_hid_report(0x01, &output_data, sizeof(output_data));
             }
         }
@@ -49,6 +50,7 @@ namespace usb {
                 case io4::CLEAR_BOARD_STATUS:
                     printf("IO4: Clear Board Status\n");
                     output_data.system_status = 0x00;
+
                     output_data.coin[0].count = 0;
                     output_data.coin[0].condition = io4::coin_condition_t::normal;
                     output_data.coin[1].count = 0;
@@ -56,6 +58,7 @@ namespace usb {
                     break;
                 case io4::SET_GENERAL_OUTPUT:
                     printf("IO4: Set General Output\n");
+                    hardware::led_update(data->payload);
                     break;
                 default:
                     break;

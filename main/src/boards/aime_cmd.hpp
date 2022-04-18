@@ -1,7 +1,7 @@
 #include <PN532.h>
 #include <PN532_I2C.h>
 
-PN532_I2C pn532i2c(I2C_NUM_0, GPIO_NUM_6, GPIO_NUM_5);
+PN532_I2C pn532i2c(I2C_NUM_1, GPIO_NUM_16, GPIO_NUM_17);
 PN532 nfc(pn532i2c);
 
 uint8_t AimeKey[6], BanaKey[6];
@@ -101,19 +101,10 @@ static void sg_res_init(uint8_t payload_len = 0) { //初始化模板
 }
 
 static void sg_nfc_cmd_reset() { //重置读卡器
-    nfc.begin();
-    nfc.setPassiveActivationRetries(0x10); //设定等待次数,0xFF永远等待
     nfc.SAMConfig();
-
-    auto version = nfc.getFirmwareVersion();
-    printf("NFC FW Version: %x\n", version);
-    if (version) {
-        nfc.SAMConfig();
-        sg_res_init();
-        res.status = 3;
-        return;
-     }
-    // FastLED.showColor(0xFF0000);
+    sg_res_init();
+    res.status = 3;
+    return;
 }
 
 static void sg_nfc_cmd_get_fw_version() {
