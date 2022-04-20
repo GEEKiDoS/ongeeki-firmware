@@ -93,23 +93,16 @@ namespace hardware {
             is_inserted_coin = false;
         }
 
-        static uint16_t lever_history[32];
-        static size_t pos = 0;
+        // Low-pass filter from
+        // https://kiritchatterjee.wordpress.com/2014/11/10/a-simple-digital-low-pass-filter-in-c/
+        // since ESP32S2 has FPU then we just use float here
+        static float smooth_lever = 0;
+        const float lpf_beta = 0.025f;
 
-        lever_history[pos++] = (adc1_get_raw(LEVER_PIN) - 0x13FF) * 0x10;
+        auto raw_lever = float(adc1_get_raw(LEVER_PIN) - 0x13FF) * 0x10;
+        smooth_lever = smooth_lever - (lpf_beta * (smooth_lever - raw_lever));
 
-        if(pos == 32) {
-            pos = 0;
-        }
-
-        uint32_t lever = 0;
-        for(auto i = 0; i < 32; i++) {
-            lever += lever_history[i];
-        }
-
-        lever /= 32;
-
-        data.analog[0] = lever;
+        data.analog[0] = smooth_lever;
     }
 
     const uint8_t mu3_led_mapping[18] = {1, 0, 3, 5, 4, 2, 8, 6, 7, 11, 9, 10, 14, 12, 13, 17, 15, 16};
