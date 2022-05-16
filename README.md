@@ -1,52 +1,19 @@
-# Hello World Example
+# ONGEEKi Firmware
+## an Emulated IO4 Firmware for ESP32S2
+### IDF Version: 4.4
 
-Starts a FreeRTOS task to print "Hello World".
-
-(See the README.md file in the upper level 'examples' directory for more information about examples.)
-
-## How to use example
-
-Follow detailed instructions provided specifically for this example. 
-
-Select the instructions depending on Espressif chip installed on your development board:
-
-- [ESP32 Getting Started Guide](https://docs.espressif.com/projects/esp-idf/en/stable/get-started/index.html)
-- [ESP32-S2 Getting Started Guide](https://docs.espressif.com/projects/esp-idf/en/latest/esp32s2/get-started/index.html)
-
-
-## Example folder contents
-
-The project **hello_world** contains one source file in C language [hello_world_main.c](main/src/main.cpp). The file is located in folder [main](main).
-
-ESP-IDF projects are built using CMake. The project build configuration is contained in `CMakeLists.txt` files that provide set of directives and instructions describing the project's source files and targets (executable, library, or both). 
-
-Below is short explanation of remaining files in the project folder.
-
-```
-├── CMakeLists.txt
-├── example_test.py            Python script used for automated example testing
-├── main
-│   ├── CMakeLists.txt
-│   ├── component.mk           Component make file
-│   └── hello_world_main.c
-├── Makefile                   Makefile used by legacy GNU Make
-└── README.md                  This is the file you are currently reading
+## Compile and flash
+Under IDF 4.4 Environment (run export script first)
+```bash
+git clone --recurse-submodules https://github.com/GEEKiDoS/ongeeki-firmware.git
+cd ongeeki-firmware
+idf.py flash
 ```
 
-For more information on structure and contents of ESP-IDF projects, please refer to Section [Build System](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-guides/build-system.html) of the ESP-IDF Programming Guide.
-
-## Troubleshooting
-
-* Program upload failure
-
-    * Hardware connection is not correct: run `idf.py -p PORT monitor`, and reboot your board to see if there are any output logs.
-    * The baud rate for downloading is too high: lower your baud rate in the `menuconfig` menu, and try again.
-
-## Technical support and feedback
-
-Please use the following feedback channels:
-
-* For technical queries, go to the [esp32.com](https://esp32.com/) forum
-* For a feature request or bug report, create a [GitHub issue](https://github.com/espressif/esp-idf/issues)
-
-We will get back to you as soon as possible.
+## Hardware Pin Definitions
+- Main IO: See https://github.com/GEEKiDoS/ongeeki-firmware/blob/master/main/src/hardware.cpp#L10
+- Lever: https://github.com/GEEKiDoS/ongeeki-firmware/blob/master/main/src/hardware.cpp#L35
+- LED (WS2812): https://github.com/GEEKiDoS/ongeeki-firmware/blob/master/main/src/hardware.cpp#L53
+   - Order is left to right
+- Card Reader (PN532/I2C mode): https://github.com/GEEKiDoS/ongeeki-firmware/blob/master/main/src/boards/aime_cmd.hpp#L8
+- USB: D+ GPIO20, D- GPIO19
